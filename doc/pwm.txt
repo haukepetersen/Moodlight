@@ -1,0 +1,127 @@
+PWM:
+
+Period: 250Hz
+Granularity: 1000 steps
+16-bit timer
+prescaler: 8	-> 1 step = 1µs
+oc-reg:	   4-4000
+
+pwm has max 4 events:
+1) start of period	-> set port to init vector
+2) phase 1 off		-> set port to 101 011 or 110
+3) phase 2 off		-> set port to 100 010 or 001
+4) phase 3 off		-> set port to 000
+-> repeat
+
+- one or more of the events can be combined (same duty cycle for 2 or 3 phases)
+- events can be dicarded in case of duty cycle 100% or 0%
+
+pwm data structure:
+id	time	vect
+0	xx	010	-> id:   index in array
+			-> time: value of oc-reg for next action
+			-> vect: state of signals
+
+PWM_MIN 4
+PWM_MAX	4000
+PWM_CYCLE_MAX 1000
+
+pwm_bit[]:  uint_8
+pwm_vect[]: uint_8
+pwm_time[]: uint_16 [4:4000]
+pwm_event:  uint_8 [0:3]
+pwm_limit:  uint_8 [1:4] 
+
+PWM ISR:
+PWM_TIME = pwm_time[pwm_event];
+PWM_CLR_INT;
+PWM_PORT &= ^pwm_vect[pwm_event];
+PWM_PORT |= pwm_vect[pwm_event];
+++pwm_event;
+if (pwm_event == pwm_limit) {
+    pwm_event = 0;
+}
+
+
+PWM SET:
+Input: 3 duty cycle values
+Ouput: Ordered list with times and state vectors
+
+
+pwm_set(color[]) 
+{
+pwm_limit = 0;
+pwm_event = 0;
+for (uint8_t i = 0; i < 3; i++) {
+	pwm_vect[i] = 0;
+	pwm_time[i] = PWM_MAX;
+}
+if (color[i] == 0) {
+	pwm_vect[0] -> clear color bit
+} else if (color[i] == PWM_CYCLE_MAX) {
+	pwm_vect[0] -> set color bit
+} else {
+	
+}
+ 
+
+pwm_vect_put(uint8_t i, uint8_t c, uint16_t time) 
+{
+    
+}
+
+
+pwm_vect_set(uint8_t i, uint8_t c) 
+{
+pwm_vect[i] &= ^c;
+pwm_vect[i] |= c;
+}
+
+
+
+pwm: 
+Mix of capture compare and overflow interrupt!
+
+overflow interrupt every 8000 cycles -> reload value = 0xffff - 8000;
+
+uint16_t pwm[3] = {r, g, b};
+uint8_t event = 0..2;
+uint8_t color[3] = {rgb, bgr, rbg...}
+uint16_t reload_values[3] = {a, b, c}
+uint16_t reload_sum = 0;
+gamma_lookup...
+
+OVERFLOW_INT:
+
+led_state(states[0]);
+event = 1;
+
+
+CaCo_INT:
+
+led_state(states[event++]);
+if (states[event] == 0) {
+  disable_caco_int();
+} else {
+  CACO = caco_values[event];
+}
+
+
+SET_PWM:
+for (i:0..3) {
+  states[i] = 0x00;
+  caco_values = 0xffff;
+}
+for (i:0..2) {
+  pwm_val = prgrm_mem_read_word(pwm[i])
+  if (pwm_val > 0) {
+    states[0] = | _BV(i); 
+    if (pwm_val < 0xffff) {
+      pwm_val = 0xffff - (pwm_val * 8);
+      uint8_t j = 1;
+      while (caco_values[j] < pwm_val);
+    }
+  }
+}
+
+ 
