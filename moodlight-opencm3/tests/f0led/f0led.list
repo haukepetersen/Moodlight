@@ -1,0 +1,1185 @@
+
+f0led.elf:     file format elf32-littlearm
+
+
+Disassembly of section .text:
+
+08000000 <vector_table>:
+ 8000000:	00 20 00 20 29 04 00 08 25 04 00 08 21 04 00 08     . . )...%...!...
+	...
+ 800002c:	25 04 00 08 00 00 00 00 00 00 00 00 25 04 00 08     %...........%...
+ 800003c:	25 04 00 08 21 04 00 08 21 04 00 08 21 04 00 08     %...!...!...!...
+ 800004c:	21 04 00 08 21 04 00 08 21 04 00 08 21 04 00 08     !...!...!...!...
+ 800005c:	21 04 00 08 21 04 00 08 21 04 00 08 21 04 00 08     !...!...!...!...
+ 800006c:	21 04 00 08 21 04 00 08 21 04 00 08 21 04 00 08     !...!...!...!...
+ 800007c:	21 04 00 08 21 04 00 08 21 04 00 08 21 04 00 08     !...!...!...!...
+ 800008c:	21 04 00 08 21 04 00 08 21 04 00 08 21 04 00 08     !...!...!...!...
+ 800009c:	21 04 00 08 21 04 00 08 21 04 00 08 21 04 00 08     !...!...!...!...
+ 80000ac:	21 04 00 08 21 04 00 08 21 04 00 08 21 04 00 08     !...!...!...!...
+ 80000bc:	21 04 00 08                                         !...
+
+080000c0 <clock_setup>:
+void gpio_setup(void);
+void uart_setup(void);
+
+/* Set STM32 to 64 MHz. */
+void clock_setup(void)
+{
+ 80000c0:	b508      	push	{r3, lr}
+	rcc_clock_setup_in_hsi_out_8mhz();
+ 80000c2:	f000 f8f1 	bl	80002a8 <rcc_clock_setup_in_hsi_out_8mhz>
+}
+ 80000c6:	bd08      	pop	{r3, pc}
+
+080000c8 <gpio_setup>:
+
+void gpio_setup(void)
+{
+ 80000c8:	b508      	push	{r3, lr}
+	/* Enable GPIOE clock. */
+	rcc_periph_clock_enable(RCC_GPIOC);
+ 80000ca:	4805      	ldr	r0, [pc, #20]	; (80000e0 <gpio_setup+0x18>)
+ 80000cc:	f000 f90c 	bl	80002e8 <rcc_periph_clock_enable>
+	/* Set GPIO8-11 (in GPIO port E) to 'output push-pull'. */
+	gpio_mode_setup(GPIOC, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO8 | GPIO9);
+ 80000d0:	23c0      	movs	r3, #192	; 0xc0
+ 80000d2:	4804      	ldr	r0, [pc, #16]	; (80000e4 <gpio_setup+0x1c>)
+ 80000d4:	2101      	movs	r1, #1
+ 80000d6:	2200      	movs	r2, #0
+ 80000d8:	009b      	lsls	r3, r3, #2
+ 80000da:	f000 f953 	bl	8000384 <gpio_mode_setup>
+}
+ 80000de:	bd08      	pop	{r3, pc}
+ 80000e0:	00000293 	.word	0x00000293
+ 80000e4:	48000800 	.word	0x48000800
+
+080000e8 <uart_setup>:
+
+void uart_setup(void)
+{
+ 80000e8:	b510      	push	{r4, lr}
+	/* setup clocks */
+	rcc_periph_clock_enable(RCC_GPIOC);
+ 80000ea:	4816      	ldr	r0, [pc, #88]	; (8000144 <uart_setup+0x5c>)
+	rcc_periph_clock_enable(RCC_USART1);
+	/* setup pins */
+	gpio_mode_setup(GPIOB, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO6 | GPIO7);
+ 80000ec:	4c16      	ldr	r4, [pc, #88]	; (8000148 <uart_setup+0x60>)
+}
+
+void uart_setup(void)
+{
+	/* setup clocks */
+	rcc_periph_clock_enable(RCC_GPIOC);
+ 80000ee:	f000 f8fb 	bl	80002e8 <rcc_periph_clock_enable>
+	rcc_periph_clock_enable(RCC_USART1);
+ 80000f2:	4816      	ldr	r0, [pc, #88]	; (800014c <uart_setup+0x64>)
+ 80000f4:	f000 f8f8 	bl	80002e8 <rcc_periph_clock_enable>
+	/* setup pins */
+	gpio_mode_setup(GPIOB, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO6 | GPIO7);
+ 80000f8:	23c0      	movs	r3, #192	; 0xc0
+ 80000fa:	1c20      	adds	r0, r4, #0
+ 80000fc:	2102      	movs	r1, #2
+ 80000fe:	2200      	movs	r2, #0
+ 8000100:	f000 f940 	bl	8000384 <gpio_mode_setup>
+	gpio_set_af(GPIOB, GPIO_AF0, GPIO6 | GPIO7);
+ 8000104:	22c0      	movs	r2, #192	; 0xc0
+ 8000106:	1c20      	adds	r0, r4, #0
+ 8000108:	2100      	movs	r1, #0
+	/* setup UART */
+	usart_set_baudrate(USART1, 115200);
+ 800010a:	4c11      	ldr	r4, [pc, #68]	; (8000150 <uart_setup+0x68>)
+	/* setup clocks */
+	rcc_periph_clock_enable(RCC_GPIOC);
+	rcc_periph_clock_enable(RCC_USART1);
+	/* setup pins */
+	gpio_mode_setup(GPIOB, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO6 | GPIO7);
+	gpio_set_af(GPIOB, GPIO_AF0, GPIO6 | GPIO7);
+ 800010c:	f000 f95f 	bl	80003ce <gpio_set_af>
+	/* setup UART */
+	usart_set_baudrate(USART1, 115200);
+ 8000110:	21e1      	movs	r1, #225	; 0xe1
+ 8000112:	1c20      	adds	r0, r4, #0
+ 8000114:	0249      	lsls	r1, r1, #9
+ 8000116:	f000 f8f5 	bl	8000304 <usart_set_baudrate>
+	usart_set_databits(USART1, 8);
+ 800011a:	1c20      	adds	r0, r4, #0
+ 800011c:	2108      	movs	r1, #8
+ 800011e:	f000 f8ff 	bl	8000320 <usart_set_databits>
+	usart_set_parity(USART1, USART_PARITY_NONE);
+ 8000122:	1c20      	adds	r0, r4, #0
+ 8000124:	2100      	movs	r1, #0
+ 8000126:	f000 f909 	bl	800033c <usart_set_parity>
+//	usart_set_stopbits(USART1, USART_STOPBITS_1);
+	usart_set_flow_control(USART1, USART_FLOWCONTROL_NONE);
+ 800012a:	1c20      	adds	r0, r4, #0
+ 800012c:	2100      	movs	r1, #0
+ 800012e:	f000 f913 	bl	8000358 <usart_set_flow_control>
+	usart_set_mode(USART1, USART_MODE_TX_RX);
+ 8000132:	1c20      	adds	r0, r4, #0
+ 8000134:	210c      	movs	r1, #12
+ 8000136:	f000 f909 	bl	800034c <usart_set_mode>
+	/* enable UART */
+	usart_enable(USART1); 
+ 800013a:	1c20      	adds	r0, r4, #0
+ 800013c:	f000 f914 	bl	8000368 <usart_enable>
+}
+ 8000140:	bd10      	pop	{r4, pc}
+ 8000142:	46c0      	nop			; (mov r8, r8)
+ 8000144:	00000293 	.word	0x00000293
+ 8000148:	48000400 	.word	0x48000400
+ 800014c:	0000030e 	.word	0x0000030e
+ 8000150:	40013800 	.word	0x40013800
+
+08000154 <main>:
+
+int main(void)
+{
+ 8000154:	b508      	push	{r3, lr}
+void uart_setup(void);
+
+/* Set STM32 to 64 MHz. */
+void clock_setup(void)
+{
+	rcc_clock_setup_in_hsi_out_8mhz();
+ 8000156:	f000 f8a7 	bl	80002a8 <rcc_clock_setup_in_hsi_out_8mhz>
+int main(void)
+{
+	int i;
+
+	clock_setup();
+	gpio_setup();
+ 800015a:	f7ff ffb5 	bl	80000c8 <gpio_setup>
+//	uart_setup();
+
+	/* Set two LEDs for wigwag effect when toggling. */
+	gpio_set(GPIOC, GPIO8);
+ 800015e:	2180      	movs	r1, #128	; 0x80
+ 8000160:	4809      	ldr	r0, [pc, #36]	; (8000188 <main+0x34>)
+ 8000162:	0049      	lsls	r1, r1, #1
+ 8000164:	f000 f905 	bl	8000372 <gpio_set>
+	gpio_clear(GPIOC, GPIO9);
+ 8000168:	2180      	movs	r1, #128	; 0x80
+ 800016a:	4807      	ldr	r0, [pc, #28]	; (8000188 <main+0x34>)
+ 800016c:	0089      	lsls	r1, r1, #2
+ 800016e:	f000 f902 	bl	8000376 <gpio_clear>
+
+	uint8_t up = 0;
+	/* Blink the LEDs (PD8, PD9, PD10 and PD11) on the board. */
+	while (1) {
+		/* Toggle LEDs. */
+		gpio_toggle(GPIOC, GPIO8 | GPIO9);
+ 8000172:	21c0      	movs	r1, #192	; 0xc0
+ 8000174:	4804      	ldr	r0, [pc, #16]	; (8000188 <main+0x34>)
+ 8000176:	0089      	lsls	r1, r1, #2
+ 8000178:	f000 f900 	bl	800037c <gpio_toggle>
+ 800017c:	4b03      	ldr	r3, [pc, #12]	; (800018c <main+0x38>)
+//		usart_send_blocking(USART1, '0' + up);
+		up = (up == 10) ? 0 : ++up;
+//		usart_send_blocking(USART1, '\n');
+		for (i = 0; i < 1000000; i++) /* Wait a bit. */
+			__asm__("nop");
+ 800017e:	46c0      	nop			; (mov r8, r8)
+ 8000180:	3b01      	subs	r3, #1
+		/* Toggle LEDs. */
+		gpio_toggle(GPIOC, GPIO8 | GPIO9);
+//		usart_send_blocking(USART1, '0' + up);
+		up = (up == 10) ? 0 : ++up;
+//		usart_send_blocking(USART1, '\n');
+		for (i = 0; i < 1000000; i++) /* Wait a bit. */
+ 8000182:	2b00      	cmp	r3, #0
+ 8000184:	d1fb      	bne.n	800017e <main+0x2a>
+ 8000186:	e7f4      	b.n	8000172 <main+0x1e>
+ 8000188:	48000800 	.word	0x48000800
+ 800018c:	000f4240 	.word	0x000f4240
+
+08000190 <rcc_osc_on.part.1>:
+
+void rcc_osc_on(enum rcc_osc osc)
+{
+	switch (osc) {
+	case HSI14:
+		RCC_CR2 |= RCC_CR2_HSI14ON;
+ 8000190:	4b02      	ldr	r3, [pc, #8]	; (800019c <rcc_osc_on.part.1+0xc>)
+ 8000192:	2101      	movs	r1, #1
+ 8000194:	681a      	ldr	r2, [r3, #0]
+ 8000196:	430a      	orrs	r2, r1
+ 8000198:	601a      	str	r2, [r3, #0]
+		break;
+	case PLL:
+		/* don't do anything */
+		break;
+	}
+}
+ 800019a:	4770      	bx	lr
+ 800019c:	40021032 	.word	0x40021032
+
+080001a0 <rcc_set_sysclk_source.part.2>:
+		break;
+	case HSE:
+		RCC_CFGR = (RCC_CFGR & ~RCC_CFGR_SW) | RCC_CFGR_SW_HSE;
+		break;
+	case PLL:
+		RCC_CFGR = (RCC_CFGR & ~RCC_CFGR_SW) | RCC_CFGR_SW_PLL;
+ 80001a0:	4b03      	ldr	r3, [pc, #12]	; (80001b0 <rcc_set_sysclk_source.part.2+0x10>)
+ 80001a2:	2103      	movs	r1, #3
+ 80001a4:	681a      	ldr	r2, [r3, #0]
+ 80001a6:	438a      	bics	r2, r1
+ 80001a8:	2102      	movs	r1, #2
+ 80001aa:	430a      	orrs	r2, r1
+ 80001ac:	601a      	str	r2, [r3, #0]
+	case LSE:
+	case HSI14:
+		/* do nothing */
+		break;
+	}
+}
+ 80001ae:	4770      	bx	lr
+ 80001b0:	40021004 	.word	0x40021004
+
+080001b4 <rcc_wait_for_osc_ready>:
+ *
+ * @param[in] osc enum ::osc_t. Oscillator ID
+ */
+
+void rcc_wait_for_osc_ready(enum rcc_osc osc)
+{
+ 80001b4:	b500      	push	{lr}
+	switch (osc) {
+ 80001b6:	2805      	cmp	r0, #5
+ 80001b8:	d822      	bhi.n	8000200 <rcc_wait_for_osc_ready+0x4c>
+ 80001ba:	4b12      	ldr	r3, [pc, #72]	; (8000204 <rcc_wait_for_osc_ready+0x50>)
+ 80001bc:	f000 f97c 	bl	80004b8 <__gnu_thumb1_case_uqi>
+ 80001c0:	120d0803 	.word	0x120d0803
+ 80001c4:	171c      	.short	0x171c
+	case HSI14:
+		while ((RCC_CIR & RCC_CIR_HSI14RDYF) != 0);
+ 80001c6:	2220      	movs	r2, #32
+ 80001c8:	6819      	ldr	r1, [r3, #0]
+ 80001ca:	4211      	tst	r1, r2
+ 80001cc:	d1fc      	bne.n	80001c8 <rcc_wait_for_osc_ready+0x14>
+ 80001ce:	e017      	b.n	8000200 <rcc_wait_for_osc_ready+0x4c>
+		break;
+	case HSI:
+		while ((RCC_CIR & RCC_CIR_HSIRDYF) != 0);
+ 80001d0:	2204      	movs	r2, #4
+ 80001d2:	6819      	ldr	r1, [r3, #0]
+ 80001d4:	4211      	tst	r1, r2
+ 80001d6:	d1fc      	bne.n	80001d2 <rcc_wait_for_osc_ready+0x1e>
+ 80001d8:	e012      	b.n	8000200 <rcc_wait_for_osc_ready+0x4c>
+		break;
+	case HSE:
+		while ((RCC_CIR & RCC_CIR_HSERDYF) != 0);
+ 80001da:	2208      	movs	r2, #8
+ 80001dc:	6819      	ldr	r1, [r3, #0]
+ 80001de:	4211      	tst	r1, r2
+ 80001e0:	d1fc      	bne.n	80001dc <rcc_wait_for_osc_ready+0x28>
+ 80001e2:	e00d      	b.n	8000200 <rcc_wait_for_osc_ready+0x4c>
+		break;
+	case PLL:
+		while ((RCC_CIR & RCC_CIR_PLLRDYF) != 0);
+ 80001e4:	2210      	movs	r2, #16
+ 80001e6:	6819      	ldr	r1, [r3, #0]
+ 80001e8:	4211      	tst	r1, r2
+ 80001ea:	d1fc      	bne.n	80001e6 <rcc_wait_for_osc_ready+0x32>
+ 80001ec:	e008      	b.n	8000200 <rcc_wait_for_osc_ready+0x4c>
+		break;
+	case LSE:
+		while ((RCC_CIR & RCC_CIR_LSERDYF) != 0);
+ 80001ee:	2202      	movs	r2, #2
+ 80001f0:	6819      	ldr	r1, [r3, #0]
+ 80001f2:	4211      	tst	r1, r2
+ 80001f4:	d1fc      	bne.n	80001f0 <rcc_wait_for_osc_ready+0x3c>
+ 80001f6:	e003      	b.n	8000200 <rcc_wait_for_osc_ready+0x4c>
+		break;
+	case LSI:
+		while ((RCC_CIR & RCC_CIR_LSIRDYF) != 0);
+ 80001f8:	2201      	movs	r2, #1
+ 80001fa:	6819      	ldr	r1, [r3, #0]
+ 80001fc:	4211      	tst	r1, r2
+ 80001fe:	d1fc      	bne.n	80001fa <rcc_wait_for_osc_ready+0x46>
+		break;
+	}
+}
+ 8000200:	bd00      	pop	{pc}
+ 8000202:	46c0      	nop			; (mov r8, r8)
+ 8000204:	40021008 	.word	0x40021008
+
+08000208 <rcc_osc_on>:
+ *
+ * @param[in] osc enum ::osc_t. Oscillator ID
+ */
+
+void rcc_osc_on(enum rcc_osc osc)
+{
+ 8000208:	b508      	push	{r3, lr}
+	switch (osc) {
+ 800020a:	2805      	cmp	r0, #5
+ 800020c:	d815      	bhi.n	800023a <rcc_osc_on+0x32>
+ 800020e:	f000 f953 	bl	80004b8 <__gnu_thumb1_case_uqi>
+ 8000212:	0603      	.short	0x0603
+ 8000214:	0d0f1408 	.word	0x0d0f1408
+ 8000218:	f7ff ffba 	bl	8000190 <rcc_osc_on.part.1>
+ 800021c:	e00d      	b.n	800023a <rcc_osc_on+0x32>
+	case HSI14:
+		RCC_CR2 |= RCC_CR2_HSI14ON;
+		break;
+	case HSI:
+		RCC_CR |= RCC_CR_HSION;
+ 800021e:	4b07      	ldr	r3, [pc, #28]	; (800023c <rcc_osc_on+0x34>)
+ 8000220:	e007      	b.n	8000232 <rcc_osc_on+0x2a>
+		break;
+	case HSE:
+		RCC_CR |= RCC_CR_HSEON;
+ 8000222:	4b06      	ldr	r3, [pc, #24]	; (800023c <rcc_osc_on+0x34>)
+ 8000224:	2280      	movs	r2, #128	; 0x80
+ 8000226:	6819      	ldr	r1, [r3, #0]
+ 8000228:	0252      	lsls	r2, r2, #9
+ 800022a:	e004      	b.n	8000236 <rcc_osc_on+0x2e>
+		break;
+	case LSE:
+		RCC_BDCR |= RCC_BDCR_LSEON;
+ 800022c:	4b04      	ldr	r3, [pc, #16]	; (8000240 <rcc_osc_on+0x38>)
+ 800022e:	e000      	b.n	8000232 <rcc_osc_on+0x2a>
+		break;
+	case LSI:
+		RCC_CSR |= RCC_CSR_LSION;
+ 8000230:	4b04      	ldr	r3, [pc, #16]	; (8000244 <rcc_osc_on+0x3c>)
+ 8000232:	681a      	ldr	r2, [r3, #0]
+ 8000234:	2101      	movs	r1, #1
+ 8000236:	430a      	orrs	r2, r1
+ 8000238:	601a      	str	r2, [r3, #0]
+		break;
+	case PLL:
+		/* don't do anything */
+		break;
+	}
+}
+ 800023a:	bd08      	pop	{r3, pc}
+ 800023c:	40021000 	.word	0x40021000
+ 8000240:	40021020 	.word	0x40021020
+ 8000244:	40021024 	.word	0x40021024
+
+08000248 <rcc_set_sysclk_source>:
+ * @param[in] osc enum ::osc_t. Oscillator ID. Only HSE, LSE and PLL have
+ * effect.
+ */
+
+void rcc_set_sysclk_source(enum rcc_osc clk)
+{
+ 8000248:	b508      	push	{r3, lr}
+	switch (clk) {
+ 800024a:	2802      	cmp	r0, #2
+ 800024c:	d008      	beq.n	8000260 <rcc_set_sysclk_source+0x18>
+ 800024e:	2803      	cmp	r0, #3
+ 8000250:	d00e      	beq.n	8000270 <rcc_set_sysclk_source+0x28>
+ 8000252:	2801      	cmp	r0, #1
+ 8000254:	d10e      	bne.n	8000274 <rcc_set_sysclk_source+0x2c>
+	case HSI:
+		RCC_CFGR = (RCC_CFGR & ~RCC_CFGR_SW) | RCC_CFGR_SW_HSI;
+ 8000256:	4b08      	ldr	r3, [pc, #32]	; (8000278 <rcc_set_sysclk_source+0x30>)
+ 8000258:	2103      	movs	r1, #3
+ 800025a:	681a      	ldr	r2, [r3, #0]
+ 800025c:	438a      	bics	r2, r1
+ 800025e:	e005      	b.n	800026c <rcc_set_sysclk_source+0x24>
+		break;
+	case HSE:
+		RCC_CFGR = (RCC_CFGR & ~RCC_CFGR_SW) | RCC_CFGR_SW_HSE;
+ 8000260:	4b05      	ldr	r3, [pc, #20]	; (8000278 <rcc_set_sysclk_source+0x30>)
+ 8000262:	2103      	movs	r1, #3
+ 8000264:	681a      	ldr	r2, [r3, #0]
+ 8000266:	438a      	bics	r2, r1
+ 8000268:	2101      	movs	r1, #1
+ 800026a:	430a      	orrs	r2, r1
+ 800026c:	601a      	str	r2, [r3, #0]
+		break;
+ 800026e:	e001      	b.n	8000274 <rcc_set_sysclk_source+0x2c>
+ 8000270:	f7ff ff96 	bl	80001a0 <rcc_set_sysclk_source.part.2>
+	case LSE:
+	case HSI14:
+		/* do nothing */
+		break;
+	}
+}
+ 8000274:	bd08      	pop	{r3, pc}
+ 8000276:	46c0      	nop			; (mov r8, r8)
+ 8000278:	40021004 	.word	0x40021004
+
+0800027c <rcc_set_ppre>:
+ * @param[in] ppre1 Unsigned int32. APB prescale factor @ref rcc_cfgr_apb1pre
+ */
+
+void rcc_set_ppre(uint32_t ppre)
+{
+	RCC_CFGR = (RCC_CFGR & ~RCC_CFGR_PPRE) | ppre;
+ 800027c:	4b03      	ldr	r3, [pc, #12]	; (800028c <rcc_set_ppre+0x10>)
+ 800027e:	4a04      	ldr	r2, [pc, #16]	; (8000290 <rcc_set_ppre+0x14>)
+ 8000280:	6819      	ldr	r1, [r3, #0]
+ 8000282:	400a      	ands	r2, r1
+ 8000284:	4310      	orrs	r0, r2
+ 8000286:	6018      	str	r0, [r3, #0]
+}
+ 8000288:	4770      	bx	lr
+ 800028a:	46c0      	nop			; (mov r8, r8)
+ 800028c:	40021004 	.word	0x40021004
+ 8000290:	fffff8ff 	.word	0xfffff8ff
+
+08000294 <rcc_set_hpre>:
+ * @param[in] hpre Unsigned int32. AHB prescale factor @ref rcc_cfgr_ahbpre
+ */
+
+void rcc_set_hpre(uint32_t hpre)
+{
+	RCC_CFGR = (RCC_CFGR & ~RCC_CFGR_HPRE) | hpre;
+ 8000294:	4b03      	ldr	r3, [pc, #12]	; (80002a4 <rcc_set_hpre+0x10>)
+ 8000296:	21f0      	movs	r1, #240	; 0xf0
+ 8000298:	681a      	ldr	r2, [r3, #0]
+ 800029a:	438a      	bics	r2, r1
+ 800029c:	4310      	orrs	r0, r2
+ 800029e:	6018      	str	r0, [r3, #0]
+}
+ 80002a0:	4770      	bx	lr
+ 80002a2:	46c0      	nop			; (mov r8, r8)
+ 80002a4:	40021004 	.word	0x40021004
+
+080002a8 <rcc_clock_setup_in_hsi_out_8mhz>:
+
+	cm3_assert_not_reached();
+}
+
+void rcc_clock_setup_in_hsi_out_8mhz(void)
+{
+ 80002a8:	b508      	push	{r3, lr}
+	rcc_osc_on(HSI);
+ 80002aa:	2001      	movs	r0, #1
+ 80002ac:	f7ff ffac 	bl	8000208 <rcc_osc_on>
+	rcc_wait_for_osc_ready(HSI);
+ 80002b0:	2001      	movs	r0, #1
+ 80002b2:	f7ff ff7f 	bl	80001b4 <rcc_wait_for_osc_ready>
+	rcc_set_sysclk_source(HSI);
+ 80002b6:	2001      	movs	r0, #1
+ 80002b8:	f7ff ffc6 	bl	8000248 <rcc_set_sysclk_source>
+
+	rcc_set_hpre(RCC_CFGR_HPRE_NODIV);
+ 80002bc:	2000      	movs	r0, #0
+ 80002be:	f7ff ffe9 	bl	8000294 <rcc_set_hpre>
+	rcc_set_ppre(RCC_CFGR_PPRE_NODIV);
+ 80002c2:	2000      	movs	r0, #0
+ 80002c4:	f7ff ffda 	bl	800027c <rcc_set_ppre>
+
+	flash_set_ws(FLASH_ACR_LATENCY_000_024MHZ);
+ 80002c8:	2000      	movs	r0, #0
+ 80002ca:	f000 f8eb 	bl	80004a4 <flash_set_ws>
+
+	rcc_ppre_frequency = 8000000;
+ 80002ce:	4b03      	ldr	r3, [pc, #12]	; (80002dc <rcc_clock_setup_in_hsi_out_8mhz+0x34>)
+ 80002d0:	4a03      	ldr	r2, [pc, #12]	; (80002e0 <rcc_clock_setup_in_hsi_out_8mhz+0x38>)
+ 80002d2:	6013      	str	r3, [r2, #0]
+	rcc_core_frequency = 8000000;
+ 80002d4:	4a03      	ldr	r2, [pc, #12]	; (80002e4 <rcc_clock_setup_in_hsi_out_8mhz+0x3c>)
+ 80002d6:	6013      	str	r3, [r2, #0]
+}
+ 80002d8:	bd08      	pop	{r3, pc}
+ 80002da:	46c0      	nop			; (mov r8, r8)
+ 80002dc:	007a1200 	.word	0x007a1200
+ 80002e0:	20000004 	.word	0x20000004
+ 80002e4:	20000000 	.word	0x20000000
+
+080002e8 <rcc_periph_clock_enable>:
+#define _RCC_REG(i)		MMIO32(RCC_BASE + ((i) >> 5))
+#define _RCC_BIT(i)		(1 << ((i) & 0x1f))
+
+void rcc_periph_clock_enable(enum rcc_periph_clken periph)
+{
+	_RCC_REG(periph) |= _RCC_BIT(periph);
+ 80002e8:	4a05      	ldr	r2, [pc, #20]	; (8000300 <rcc_periph_clock_enable+0x18>)
+ 80002ea:	0943      	lsrs	r3, r0, #5
+ 80002ec:	211f      	movs	r1, #31
+ 80002ee:	189b      	adds	r3, r3, r2
+ 80002f0:	4008      	ands	r0, r1
+ 80002f2:	2101      	movs	r1, #1
+ 80002f4:	681a      	ldr	r2, [r3, #0]
+ 80002f6:	4081      	lsls	r1, r0
+ 80002f8:	1c08      	adds	r0, r1, #0
+ 80002fa:	4310      	orrs	r0, r2
+ 80002fc:	6018      	str	r0, [r3, #0]
+}
+ 80002fe:	4770      	bx	lr
+ 8000300:	40021000 	.word	0x40021000
+
+08000304 <usart_set_baudrate>:
+		clock = rcc_ppre_frequency;
+		/* TODO selective PCLK, SYSCLK, HSI or LSE */
+	}
+
+	/* TODO check oversampling 16 */
+	USART_BRR(usart) = ((2 * clock) + baud) / (2 * baud);
+ 8000304:	4b05      	ldr	r3, [pc, #20]	; (800031c <usart_set_baudrate+0x18>)
+ * usart_reg_base
+ * @param[in] baud unsigned 32 bit. Baud rate specified in Hz.
+ */
+
+void usart_set_baudrate(uint32_t usart, uint32_t baud)
+{
+ 8000306:	b510      	push	{r4, lr}
+ 8000308:	1c04      	adds	r4, r0, #0
+		clock = rcc_ppre_frequency;
+		/* TODO selective PCLK, SYSCLK, HSI or LSE */
+	}
+
+	/* TODO check oversampling 16 */
+	USART_BRR(usart) = ((2 * clock) + baud) / (2 * baud);
+ 800030a:	6818      	ldr	r0, [r3, #0]
+ 800030c:	0040      	lsls	r0, r0, #1
+ 800030e:	1808      	adds	r0, r1, r0
+ 8000310:	0049      	lsls	r1, r1, #1
+ 8000312:	f000 f969 	bl	80005e8 <____aeabi_uidiv_from_thumb>
+ 8000316:	60e0      	str	r0, [r4, #12]
+}
+ 8000318:	bd10      	pop	{r4, pc}
+ 800031a:	46c0      	nop			; (mov r8, r8)
+ 800031c:	20000004 	.word	0x20000004
+
+08000320 <usart_set_databits>:
+ * usart_reg_base
+ * @param[in] bits unsigned 32 bit. Word length in bits 8 or 9.
+ */
+
+void usart_set_databits(uint32_t usart, uint32_t bits)
+{
+ 8000320:	b500      	push	{lr}
+	if (bits == 8) {
+		USART_CR1(usart) &= ~USART_CR1_M; /* 8 data bits */
+ 8000322:	6802      	ldr	r2, [r0, #0]
+ * @param[in] bits unsigned 32 bit. Word length in bits 8 or 9.
+ */
+
+void usart_set_databits(uint32_t usart, uint32_t bits)
+{
+	if (bits == 8) {
+ 8000324:	2908      	cmp	r1, #8
+ 8000326:	d102      	bne.n	800032e <usart_set_databits+0xe>
+		USART_CR1(usart) &= ~USART_CR1_M; /* 8 data bits */
+ 8000328:	4b03      	ldr	r3, [pc, #12]	; (8000338 <usart_set_databits+0x18>)
+ 800032a:	4013      	ands	r3, r2
+ 800032c:	e002      	b.n	8000334 <usart_set_databits+0x14>
+	} else {
+		USART_CR1(usart) |= USART_CR1_M;  /* 9 data bits */
+ 800032e:	2380      	movs	r3, #128	; 0x80
+ 8000330:	015b      	lsls	r3, r3, #5
+ 8000332:	4313      	orrs	r3, r2
+ 8000334:	6003      	str	r3, [r0, #0]
+	}
+}
+ 8000336:	bd00      	pop	{pc}
+ 8000338:	ffffefff 	.word	0xffffefff
+
+0800033c <usart_set_parity>:
+ * @param[in] parity unsigned 32 bit. Parity @ref usart_cr1_parity.
+ */
+
+void usart_set_parity(uint32_t usart, uint32_t parity)
+{
+	USART_CR1(usart) = (USART_CR1(usart) & ~USART_PARITY) | parity;
+ 800033c:	6802      	ldr	r2, [r0, #0]
+ 800033e:	4b02      	ldr	r3, [pc, #8]	; (8000348 <usart_set_parity+0xc>)
+ 8000340:	4013      	ands	r3, r2
+ 8000342:	4319      	orrs	r1, r3
+ 8000344:	6001      	str	r1, [r0, #0]
+}
+ 8000346:	4770      	bx	lr
+ 8000348:	fffff9ff 	.word	0xfffff9ff
+
+0800034c <usart_set_mode>:
+ * @param[in] mode unsigned 32 bit. Mode @ref usart_cr1_mode.
+ */
+
+void usart_set_mode(uint32_t usart, uint32_t mode)
+{
+	USART_CR1(usart) = (USART_CR1(usart) & ~USART_MODE) | mode;
+ 800034c:	6803      	ldr	r3, [r0, #0]
+ 800034e:	220c      	movs	r2, #12
+ 8000350:	4393      	bics	r3, r2
+ 8000352:	4319      	orrs	r1, r3
+ 8000354:	6001      	str	r1, [r0, #0]
+}
+ 8000356:	4770      	bx	lr
+
+08000358 <usart_set_flow_control>:
+ * usart_cr3_flowcontrol.
+ */
+
+void usart_set_flow_control(uint32_t usart, uint32_t flowctrl)
+{
+	USART_CR3(usart) = (USART_CR3(usart) & ~USART_FLOWCONTROL) | flowctrl;
+ 8000358:	6882      	ldr	r2, [r0, #8]
+ 800035a:	4b02      	ldr	r3, [pc, #8]	; (8000364 <usart_set_flow_control+0xc>)
+ 800035c:	4013      	ands	r3, r2
+ 800035e:	4319      	orrs	r1, r3
+ 8000360:	6081      	str	r1, [r0, #8]
+}
+ 8000362:	4770      	bx	lr
+ 8000364:	fffffcff 	.word	0xfffffcff
+
+08000368 <usart_enable>:
+ * usart_reg_base
+ */
+
+void usart_enable(uint32_t usart)
+{
+	USART_CR1(usart) |= USART_CR1_UE;
+ 8000368:	6803      	ldr	r3, [r0, #0]
+ 800036a:	2201      	movs	r2, #1
+ 800036c:	4313      	orrs	r3, r2
+ 800036e:	6003      	str	r3, [r0, #0]
+}
+ 8000370:	4770      	bx	lr
+
+08000372 <gpio_set>:
+	     If multiple pins are to be changed, use logical OR '|' to separate
+	     them.
+*/
+void gpio_set(uint32_t gpioport, uint16_t gpios)
+{
+	GPIO_BSRR(gpioport) = gpios;
+ 8000372:	6181      	str	r1, [r0, #24]
+}
+ 8000374:	4770      	bx	lr
+
+08000376 <gpio_clear>:
+	     If multiple pins are to be changed, use logical OR '|' to separate
+	     them.
+*/
+void  gpio_clear(uint32_t gpioport, uint16_t gpios)
+{
+	GPIO_BSRR(gpioport) = (gpios << 16);
+ 8000376:	0409      	lsls	r1, r1, #16
+ 8000378:	6181      	str	r1, [r0, #24]
+}
+ 800037a:	4770      	bx	lr
+
+0800037c <gpio_toggle>:
+	     If multiple pins are to be changed, use logical OR '|' to separate
+	     them.
+*/
+void gpio_toggle(uint32_t gpioport, uint16_t gpios)
+{
+	GPIO_ODR(gpioport) ^= gpios;
+ 800037c:	6943      	ldr	r3, [r0, #20]
+ 800037e:	4059      	eors	r1, r3
+ 8000380:	6141      	str	r1, [r0, #20]
+}
+ 8000382:	4770      	bx	lr
+
+08000384 <gpio_mode_setup>:
+	     If multiple pins are to be set, use bitwise OR '|' to separate
+	     them.
+*/
+void gpio_mode_setup(uint32_t gpioport, uint8_t mode, uint8_t pull_up_down,
+		     uint16_t gpios)
+{
+ 8000384:	b5f0      	push	{r4, r5, r6, r7, lr}
+ 8000386:	b085      	sub	sp, #20
+ 8000388:	9103      	str	r1, [sp, #12]
+
+	/*
+	 * We want to set the config only for the pins mentioned in gpios,
+	 * but keeping the others, so read out the actual config first.
+	 */
+	moder = GPIO_MODER(gpioport);
+ 800038a:	6801      	ldr	r1, [r0, #0]
+	pupd = GPIO_PUPDR(gpioport);
+ 800038c:	68c4      	ldr	r4, [r0, #12]
+
+	/*
+	 * We want to set the config only for the pins mentioned in gpios,
+	 * but keeping the others, so read out the actual config first.
+	 */
+	moder = GPIO_MODER(gpioport);
+ 800038e:	468c      	mov	ip, r1
+	     If multiple pins are to be set, use bitwise OR '|' to separate
+	     them.
+*/
+void gpio_mode_setup(uint32_t gpioport, uint8_t mode, uint8_t pull_up_down,
+		     uint16_t gpios)
+{
+ 8000390:	9301      	str	r3, [sp, #4]
+	/*
+	 * We want to set the config only for the pins mentioned in gpios,
+	 * but keeping the others, so read out the actual config first.
+	 */
+	moder = GPIO_MODER(gpioport);
+	pupd = GPIO_PUPDR(gpioport);
+ 8000392:	2100      	movs	r1, #0
+
+	for (i = 0; i < 16; i++) {
+		if (!((1 << i) & gpios)) {
+ 8000394:	9d01      	ldr	r5, [sp, #4]
+ 8000396:	2301      	movs	r3, #1
+ 8000398:	410d      	asrs	r5, r1
+ 800039a:	421d      	tst	r5, r3
+ 800039c:	d00f      	beq.n	80003be <gpio_mode_setup+0x3a>
+gpio_pup
+@param[in] gpios Unsigned int16. Pin identifiers @ref gpio_pin_id
+	     If multiple pins are to be set, use bitwise OR '|' to separate
+	     them.
+*/
+void gpio_mode_setup(uint32_t gpioport, uint8_t mode, uint8_t pull_up_down,
+ 800039e:	004d      	lsls	r5, r1, #1
+	for (i = 0; i < 16; i++) {
+		if (!((1 << i) & gpios)) {
+			continue;
+		}
+
+		moder &= ~GPIO_MODE_MASK(i);
+ 80003a0:	2603      	movs	r6, #3
+ 80003a2:	40ae      	lsls	r6, r5
+ 80003a4:	43f6      	mvns	r6, r6
+ 80003a6:	4667      	mov	r7, ip
+ 80003a8:	4037      	ands	r7, r6
+ 80003aa:	46bc      	mov	ip, r7
+		moder |= GPIO_MODE(i, mode);
+ 80003ac:	9f03      	ldr	r7, [sp, #12]
+ 80003ae:	4663      	mov	r3, ip
+		pupd &= ~GPIO_PUPD_MASK(i);
+ 80003b0:	4034      	ands	r4, r6
+		if (!((1 << i) & gpios)) {
+			continue;
+		}
+
+		moder &= ~GPIO_MODE_MASK(i);
+		moder |= GPIO_MODE(i, mode);
+ 80003b2:	40af      	lsls	r7, r5
+		pupd &= ~GPIO_PUPD_MASK(i);
+		pupd |= GPIO_PUPD(i, pull_up_down);
+ 80003b4:	1c16      	adds	r6, r2, #0
+		if (!((1 << i) & gpios)) {
+			continue;
+		}
+
+		moder &= ~GPIO_MODE_MASK(i);
+		moder |= GPIO_MODE(i, mode);
+ 80003b6:	431f      	orrs	r7, r3
+		pupd &= ~GPIO_PUPD_MASK(i);
+		pupd |= GPIO_PUPD(i, pull_up_down);
+ 80003b8:	40ae      	lsls	r6, r5
+		if (!((1 << i) & gpios)) {
+			continue;
+		}
+
+		moder &= ~GPIO_MODE_MASK(i);
+		moder |= GPIO_MODE(i, mode);
+ 80003ba:	46bc      	mov	ip, r7
+		pupd &= ~GPIO_PUPD_MASK(i);
+		pupd |= GPIO_PUPD(i, pull_up_down);
+ 80003bc:	4334      	orrs	r4, r6
+ 80003be:	3101      	adds	r1, #1
+	 * but keeping the others, so read out the actual config first.
+	 */
+	moder = GPIO_MODER(gpioport);
+	pupd = GPIO_PUPDR(gpioport);
+
+	for (i = 0; i < 16; i++) {
+ 80003c0:	2910      	cmp	r1, #16
+ 80003c2:	d1e7      	bne.n	8000394 <gpio_mode_setup+0x10>
+		pupd &= ~GPIO_PUPD_MASK(i);
+		pupd |= GPIO_PUPD(i, pull_up_down);
+	}
+
+	/* Set mode and pull up/down control registers. */
+	GPIO_MODER(gpioport) = moder;
+ 80003c4:	4667      	mov	r7, ip
+ 80003c6:	6007      	str	r7, [r0, #0]
+	GPIO_PUPDR(gpioport) = pupd;
+ 80003c8:	60c4      	str	r4, [r0, #12]
+}
+ 80003ca:	b005      	add	sp, #20
+ 80003cc:	bdf0      	pop	{r4, r5, r6, r7, pc}
+
+080003ce <gpio_set_af>:
+@param[in] gpios Unsigned int16. Pin identifiers @ref gpio_pin_id
+	     If multiple pins are to be set, use bitwise OR '|' to separate
+	     them.
+*/
+void gpio_set_af(uint32_t gpioport, uint8_t alt_func_num, uint16_t gpios)
+{
+ 80003ce:	b5f0      	push	{r4, r5, r6, r7, lr}
+	uint16_t i;
+	uint32_t afrl, afrh;
+
+	afrl = GPIO_AFRL(gpioport);
+ 80003d0:	6a05      	ldr	r5, [r0, #32]
+	afrh = GPIO_AFRH(gpioport);
+ 80003d2:	6a44      	ldr	r4, [r0, #36]	; 0x24
+ 80003d4:	2300      	movs	r3, #0
+
+	for (i = 0; i < 8; i++) {
+		if (!((1 << i) & gpios)) {
+ 80003d6:	1c16      	adds	r6, r2, #0
+ 80003d8:	411e      	asrs	r6, r3
+ 80003da:	2701      	movs	r7, #1
+ 80003dc:	423e      	tst	r6, r7
+ 80003de:	d006      	beq.n	80003ee <gpio_set_af+0x20>
+gpio_af_num
+@param[in] gpios Unsigned int16. Pin identifiers @ref gpio_pin_id
+	     If multiple pins are to be set, use bitwise OR '|' to separate
+	     them.
+*/
+void gpio_set_af(uint32_t gpioport, uint8_t alt_func_num, uint16_t gpios)
+ 80003e0:	009e      	lsls	r6, r3, #2
+
+	for (i = 0; i < 8; i++) {
+		if (!((1 << i) & gpios)) {
+			continue;
+		}
+		afrl &= ~GPIO_AFR_MASK(i);
+ 80003e2:	270f      	movs	r7, #15
+ 80003e4:	40b7      	lsls	r7, r6
+ 80003e6:	43bd      	bics	r5, r7
+		afrl |= GPIO_AFR(i, alt_func_num);
+ 80003e8:	1c0f      	adds	r7, r1, #0
+ 80003ea:	40b7      	lsls	r7, r6
+ 80003ec:	433d      	orrs	r5, r7
+ 80003ee:	3301      	adds	r3, #1
+	uint32_t afrl, afrh;
+
+	afrl = GPIO_AFRL(gpioport);
+	afrh = GPIO_AFRH(gpioport);
+
+	for (i = 0; i < 8; i++) {
+ 80003f0:	2b08      	cmp	r3, #8
+ 80003f2:	d1f0      	bne.n	80003d6 <gpio_set_af+0x8>
+ 80003f4:	2300      	movs	r3, #0
+gpio_af_num
+@param[in] gpios Unsigned int16. Pin identifiers @ref gpio_pin_id
+	     If multiple pins are to be set, use bitwise OR '|' to separate
+	     them.
+*/
+void gpio_set_af(uint32_t gpioport, uint8_t alt_func_num, uint16_t gpios)
+ 80003f6:	1c1f      	adds	r7, r3, #0
+ 80003f8:	3708      	adds	r7, #8
+		afrl &= ~GPIO_AFR_MASK(i);
+		afrl |= GPIO_AFR(i, alt_func_num);
+	}
+
+	for (i = 8; i < 16; i++) {
+		if (!((1 << i) & gpios)) {
+ 80003fa:	1c16      	adds	r6, r2, #0
+ 80003fc:	413e      	asrs	r6, r7
+ 80003fe:	1c37      	adds	r7, r6, #0
+ 8000400:	2601      	movs	r6, #1
+ 8000402:	4237      	tst	r7, r6
+ 8000404:	d006      	beq.n	8000414 <gpio_set_af+0x46>
+gpio_af_num
+@param[in] gpios Unsigned int16. Pin identifiers @ref gpio_pin_id
+	     If multiple pins are to be set, use bitwise OR '|' to separate
+	     them.
+*/
+void gpio_set_af(uint32_t gpioport, uint8_t alt_func_num, uint16_t gpios)
+ 8000406:	009e      	lsls	r6, r3, #2
+
+	for (i = 8; i < 16; i++) {
+		if (!((1 << i) & gpios)) {
+			continue;
+		}
+		afrh &= ~GPIO_AFR_MASK(i - 8);
+ 8000408:	270f      	movs	r7, #15
+ 800040a:	40b7      	lsls	r7, r6
+ 800040c:	43bc      	bics	r4, r7
+		afrh |= GPIO_AFR(i - 8, alt_func_num);
+ 800040e:	1c0f      	adds	r7, r1, #0
+ 8000410:	40b7      	lsls	r7, r6
+ 8000412:	433c      	orrs	r4, r7
+ 8000414:	3301      	adds	r3, #1
+		}
+		afrl &= ~GPIO_AFR_MASK(i);
+		afrl |= GPIO_AFR(i, alt_func_num);
+	}
+
+	for (i = 8; i < 16; i++) {
+ 8000416:	2b08      	cmp	r3, #8
+ 8000418:	d1ed      	bne.n	80003f6 <gpio_set_af+0x28>
+		}
+		afrh &= ~GPIO_AFR_MASK(i - 8);
+		afrh |= GPIO_AFR(i - 8, alt_func_num);
+	}
+
+	GPIO_AFRL(gpioport) = afrl;
+ 800041a:	6205      	str	r5, [r0, #32]
+	GPIO_AFRH(gpioport) = afrh;
+ 800041c:	6244      	str	r4, [r0, #36]	; 0x24
+}
+ 800041e:	bdf0      	pop	{r4, r5, r6, r7, pc}
+
+08000420 <blocking_handler>:
+	}
+
+}
+
+void blocking_handler(void)
+{
+ 8000420:	b500      	push	{lr}
+ 8000422:	e7fe      	b.n	8000422 <blocking_handler+0x2>
+
+08000424 <null_handler>:
+}
+
+void null_handler(void)
+{
+	/* Do nothing. */
+}
+ 8000424:	4770      	bx	lr
+	...
+
+08000428 <reset_handler>:
+void WEAK __attribute__ ((naked)) reset_handler(void)
+{
+	volatile unsigned *src, *dest;
+	funcp_t *fp;
+
+	for (src = &_data_loadaddr, dest = &_data;
+ 8000428:	2200      	movs	r2, #0
+	.irq = {
+		IRQ_HANDLERS
+	}
+};
+
+void WEAK __attribute__ ((naked)) reset_handler(void)
+ 800042a:	4d14      	ldr	r5, [pc, #80]	; (800047c <reset_handler+0x54>)
+ 800042c:	4814      	ldr	r0, [pc, #80]	; (8000480 <reset_handler+0x58>)
+{
+	volatile unsigned *src, *dest;
+	funcp_t *fp;
+
+	for (src = &_data_loadaddr, dest = &_data;
+ 800042e:	4915      	ldr	r1, [pc, #84]	; (8000484 <reset_handler+0x5c>)
+ 8000430:	e002      	b.n	8000438 <reset_handler+0x10>
+		dest < &_edata;
+		src++, dest++) {
+		*dest = *src;
+ 8000432:	6824      	ldr	r4, [r4, #0]
+ 8000434:	3204      	adds	r2, #4
+ 8000436:	601c      	str	r4, [r3, #0]
+	.irq = {
+		IRQ_HANDLERS
+	}
+};
+
+void WEAK __attribute__ ((naked)) reset_handler(void)
+ 8000438:	1813      	adds	r3, r2, r0
+ 800043a:	1954      	adds	r4, r2, r5
+{
+	volatile unsigned *src, *dest;
+	funcp_t *fp;
+
+	for (src = &_data_loadaddr, dest = &_data;
+ 800043c:	428b      	cmp	r3, r1
+ 800043e:	d3f8      	bcc.n	8000432 <reset_handler+0xa>
+ 8000440:	e001      	b.n	8000446 <reset_handler+0x1e>
+		src++, dest++) {
+		*dest = *src;
+	}
+
+	while (dest < &_ebss) {
+		*dest++ = 0;
+ 8000442:	c302      	stmia	r3!, {r1}
+ 8000444:	e001      	b.n	800044a <reset_handler+0x22>
+		dest < &_edata;
+		src++, dest++) {
+		*dest = *src;
+	}
+
+	while (dest < &_ebss) {
+ 8000446:	4a10      	ldr	r2, [pc, #64]	; (8000488 <reset_handler+0x60>)
+		*dest++ = 0;
+ 8000448:	2100      	movs	r1, #0
+		dest < &_edata;
+		src++, dest++) {
+		*dest = *src;
+	}
+
+	while (dest < &_ebss) {
+ 800044a:	4293      	cmp	r3, r2
+ 800044c:	d3f9      	bcc.n	8000442 <reset_handler+0x1a>
+ 800044e:	4c0f      	ldr	r4, [pc, #60]	; (800048c <reset_handler+0x64>)
+ 8000450:	e001      	b.n	8000456 <reset_handler+0x2e>
+		*dest++ = 0;
+	}
+
+	/* Constructors. */
+	for (fp = &__preinit_array_start; fp < &__preinit_array_end; fp++) {
+		(*fp)();
+ 8000452:	cc08      	ldmia	r4!, {r3}
+ 8000454:	4798      	blx	r3
+	while (dest < &_ebss) {
+		*dest++ = 0;
+	}
+
+	/* Constructors. */
+	for (fp = &__preinit_array_start; fp < &__preinit_array_end; fp++) {
+ 8000456:	4b0e      	ldr	r3, [pc, #56]	; (8000490 <reset_handler+0x68>)
+ 8000458:	429c      	cmp	r4, r3
+ 800045a:	d3fa      	bcc.n	8000452 <reset_handler+0x2a>
+ 800045c:	4c0d      	ldr	r4, [pc, #52]	; (8000494 <reset_handler+0x6c>)
+ 800045e:	e001      	b.n	8000464 <reset_handler+0x3c>
+		(*fp)();
+	}
+	for (fp = &__init_array_start; fp < &__init_array_end; fp++) {
+		(*fp)();
+ 8000460:	cc08      	ldmia	r4!, {r3}
+ 8000462:	4798      	blx	r3
+
+	/* Constructors. */
+	for (fp = &__preinit_array_start; fp < &__preinit_array_end; fp++) {
+		(*fp)();
+	}
+	for (fp = &__init_array_start; fp < &__init_array_end; fp++) {
+ 8000464:	4b0c      	ldr	r3, [pc, #48]	; (8000498 <reset_handler+0x70>)
+ 8000466:	429c      	cmp	r4, r3
+ 8000468:	d3fa      	bcc.n	8000460 <reset_handler+0x38>
+
+	/* might be provided by platform specific vector.c */
+	pre_main();
+
+	/* Call the application's entry point. */
+	main();
+ 800046a:	f7ff fe73 	bl	8000154 <main>
+
+	/* Destructors. */
+	for (fp = &__fini_array_start; fp < &__fini_array_end; fp++) {
+ 800046e:	4c0b      	ldr	r4, [pc, #44]	; (800049c <reset_handler+0x74>)
+ 8000470:	e001      	b.n	8000476 <reset_handler+0x4e>
+		(*fp)();
+ 8000472:	cc08      	ldmia	r4!, {r3}
+ 8000474:	4798      	blx	r3
+
+	/* Call the application's entry point. */
+	main();
+
+	/* Destructors. */
+	for (fp = &__fini_array_start; fp < &__fini_array_end; fp++) {
+ 8000476:	4b0a      	ldr	r3, [pc, #40]	; (80004a0 <reset_handler+0x78>)
+ 8000478:	429c      	cmp	r4, r3
+ 800047a:	d3fa      	bcc.n	8000472 <reset_handler+0x4a>
+ 800047c:	080005f0 	.word	0x080005f0
+ 8000480:	20000000 	.word	0x20000000
+ 8000484:	20000008 	.word	0x20000008
+ 8000488:	20000008 	.word	0x20000008
+ 800048c:	080005f0 	.word	0x080005f0
+ 8000490:	080005f0 	.word	0x080005f0
+ 8000494:	080005f0 	.word	0x080005f0
+ 8000498:	080005f0 	.word	0x080005f0
+ 800049c:	080005f0 	.word	0x080005f0
+ 80004a0:	080005f0 	.word	0x080005f0
+
+080004a4 <flash_set_ws>:
+	FLASH_ACR &= ~FLASH_ACR_PRFTBE;
+}
+
+void flash_set_ws(uint32_t ws)
+{
+	FLASH_ACR = (FLASH_ACR & ~FLASH_ACR_LATENCY) | ws;
+ 80004a4:	4b03      	ldr	r3, [pc, #12]	; (80004b4 <flash_set_ws+0x10>)
+ 80004a6:	2107      	movs	r1, #7
+ 80004a8:	681a      	ldr	r2, [r3, #0]
+ 80004aa:	438a      	bics	r2, r1
+ 80004ac:	4310      	orrs	r0, r2
+ 80004ae:	6018      	str	r0, [r3, #0]
+}
+ 80004b0:	4770      	bx	lr
+ 80004b2:	46c0      	nop			; (mov r8, r8)
+ 80004b4:	40022000 	.word	0x40022000
+
+080004b8 <__gnu_thumb1_case_uqi>:
+ 80004b8:	b402      	push	{r1}
+ 80004ba:	4671      	mov	r1, lr
+ 80004bc:	0849      	lsrs	r1, r1, #1
+ 80004be:	0049      	lsls	r1, r1, #1
+ 80004c0:	5c09      	ldrb	r1, [r1, r0]
+ 80004c2:	0049      	lsls	r1, r1, #1
+ 80004c4:	448e      	add	lr, r1
+ 80004c6:	bc02      	pop	{r1}
+ 80004c8:	4770      	bx	lr
+ 80004ca:	46c0      	nop			; (mov r8, r8)
+
+080004cc <__aeabi_uidiv>:
+ 80004cc:	e2512001 	subs	r2, r1, #1
+ 80004d0:	012fff1e 	bxeq	lr
+ 80004d4:	3a000036 	bcc	80005b4 <__aeabi_uidiv+0xe8>
+ 80004d8:	e1500001 	cmp	r0, r1
+ 80004dc:	9a000022 	bls	800056c <__aeabi_uidiv+0xa0>
+ 80004e0:	e1110002 	tst	r1, r2
+ 80004e4:	0a000023 	beq	8000578 <__aeabi_uidiv+0xac>
+ 80004e8:	e311020e 	tst	r1, #-536870912	; 0xe0000000
+ 80004ec:	01a01181 	lsleq	r1, r1, #3
+ 80004f0:	03a03008 	moveq	r3, #8
+ 80004f4:	13a03001 	movne	r3, #1
+ 80004f8:	e3510201 	cmp	r1, #268435456	; 0x10000000
+ 80004fc:	31510000 	cmpcc	r1, r0
+ 8000500:	31a01201 	lslcc	r1, r1, #4
+ 8000504:	31a03203 	lslcc	r3, r3, #4
+ 8000508:	3afffffa 	bcc	80004f8 <__aeabi_uidiv+0x2c>
+ 800050c:	e3510102 	cmp	r1, #-2147483648	; 0x80000000
+ 8000510:	31510000 	cmpcc	r1, r0
+ 8000514:	31a01081 	lslcc	r1, r1, #1
+ 8000518:	31a03083 	lslcc	r3, r3, #1
+ 800051c:	3afffffa 	bcc	800050c <__aeabi_uidiv+0x40>
+ 8000520:	e3a02000 	mov	r2, #0
+ 8000524:	e1500001 	cmp	r0, r1
+ 8000528:	20400001 	subcs	r0, r0, r1
+ 800052c:	21822003 	orrcs	r2, r2, r3
+ 8000530:	e15000a1 	cmp	r0, r1, lsr #1
+ 8000534:	204000a1 	subcs	r0, r0, r1, lsr #1
+ 8000538:	218220a3 	orrcs	r2, r2, r3, lsr #1
+ 800053c:	e1500121 	cmp	r0, r1, lsr #2
+ 8000540:	20400121 	subcs	r0, r0, r1, lsr #2
+ 8000544:	21822123 	orrcs	r2, r2, r3, lsr #2
+ 8000548:	e15001a1 	cmp	r0, r1, lsr #3
+ 800054c:	204001a1 	subcs	r0, r0, r1, lsr #3
+ 8000550:	218221a3 	orrcs	r2, r2, r3, lsr #3
+ 8000554:	e3500000 	cmp	r0, #0
+ 8000558:	11b03223 	lsrsne	r3, r3, #4
+ 800055c:	11a01221 	lsrne	r1, r1, #4
+ 8000560:	1affffef 	bne	8000524 <__aeabi_uidiv+0x58>
+ 8000564:	e1a00002 	mov	r0, r2
+ 8000568:	e12fff1e 	bx	lr
+ 800056c:	03a00001 	moveq	r0, #1
+ 8000570:	13a00000 	movne	r0, #0
+ 8000574:	e12fff1e 	bx	lr
+ 8000578:	e3510801 	cmp	r1, #65536	; 0x10000
+ 800057c:	21a01821 	lsrcs	r1, r1, #16
+ 8000580:	23a02010 	movcs	r2, #16
+ 8000584:	33a02000 	movcc	r2, #0
+ 8000588:	e3510c01 	cmp	r1, #256	; 0x100
+ 800058c:	21a01421 	lsrcs	r1, r1, #8
+ 8000590:	22822008 	addcs	r2, r2, #8
+ 8000594:	e3510010 	cmp	r1, #16
+ 8000598:	21a01221 	lsrcs	r1, r1, #4
+ 800059c:	22822004 	addcs	r2, r2, #4
+ 80005a0:	e3510004 	cmp	r1, #4
+ 80005a4:	82822003 	addhi	r2, r2, #3
+ 80005a8:	908220a1 	addls	r2, r2, r1, lsr #1
+ 80005ac:	e1a00230 	lsr	r0, r0, r2
+ 80005b0:	e12fff1e 	bx	lr
+ 80005b4:	e3500000 	cmp	r0, #0
+ 80005b8:	13e00000 	mvnne	r0, #0
+ 80005bc:	ea000007 	b	80005e0 <__aeabi_idiv0>
+
+080005c0 <__aeabi_uidivmod>:
+ 80005c0:	e3510000 	cmp	r1, #0
+ 80005c4:	0afffffa 	beq	80005b4 <__aeabi_uidiv+0xe8>
+ 80005c8:	e92d4003 	push	{r0, r1, lr}
+ 80005cc:	ebffffbe 	bl	80004cc <__aeabi_uidiv>
+ 80005d0:	e8bd4006 	pop	{r1, r2, lr}
+ 80005d4:	e0030092 	mul	r3, r2, r0
+ 80005d8:	e0411003 	sub	r1, r1, r3
+ 80005dc:	e12fff1e 	bx	lr
+
+080005e0 <__aeabi_idiv0>:
+ 80005e0:	e12fff1e 	bx	lr
+ 80005e4:	00000000 	andeq	r0, r0, r0
+
+080005e8 <____aeabi_uidiv_from_thumb>:
+ 80005e8:	4778      	bx	pc
+ 80005ea:	46c0      	nop			; (mov r8, r8)
+ 80005ec:	eaffffb6 	b	80004cc <__aeabi_uidiv>
