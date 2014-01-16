@@ -1,0 +1,22 @@
+
+
+build results
+ - object files
+ - st-lib.a
+ - projname.hex projname.bin usw.
+
+
+essentials:
+ - linker file
+ - startup sequence
+
+includes: 
+ /include
+ /stm-lib
+
+sources:
+ /src
+ /stm-lib
+ /essentials
+
+
