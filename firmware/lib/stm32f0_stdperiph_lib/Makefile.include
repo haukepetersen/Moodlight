@@ -1,0 +1,22 @@
+
+# path to the stm32f0 std periphial library
+export STM_LIB_NAME = stm32f0_stdperiph_lib
+export STM_LIB_BINDIR = $(STM_LIB_BASE)/bin/
+export STM_LIB_BINARY = $(STM_LIB_BINDIR)$(STM_LIB_NAME).a
+export STM_LIB_SRCDIR = $(STM_LIB_BASE)/lib/Libraries/STM32F0xx_StdPeriph_Driver/src/
+
+# define path to linkerscript and startup file
+export LINKERSCRIPT ?= $(STM_LIB_BASE)/lib/Projects/STM32F0xx_StdPeriph_Templates/TrueSTUDIO/STM32F0XX_MD\(STM32F0x1xx\)/STM32F051R8_FLASH.ld
+export STARTUPFILE ?= $(STM_LIB_BASE)/lib/Libraries/CMSIS/Device/ST/STM32F0xx/Source/Templates/TrueSTUDIO/startup_stm32f0xx.s
+export SYSINITFILE ?= $(STM_LIB_BASE)/lib/Libraries/CMSIS/Device/ST/STM32F0xx/Source/Templates/system_stm32f0xx.c
+
+# define cpu-specific compiler options (mcu-type and fpu options)
+export CPUOPT = -mcpu=cortex-m0
+export STMFLAGS = -DUSE_STDPERIPH_DRIVER -DSTM32F0XX_MD
+
+# add stm std periph library include paths to the global includes list
+INCLUDES += -I$(STM_LIB_BASE)/lib/Libraries/CMSIS/Include
+INCLUDES += -I$(STM_LIB_BASE)/lib/Libraries/CMSIS/Device/ST/STM32F0xx/Include
+INCLUDES += -I$(STM_LIB_BASE)/lib/Libraries/STM32F0xx_StdPeriph_Driver/inc
+export INCLUDES
+
